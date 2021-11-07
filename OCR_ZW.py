@@ -9,7 +9,7 @@ ss_filename = 'OCR_ZW_screenshot.png' # Name of the screenshot. Add extension, p
 simplified = False # Set to True to detect simplified Chinese. 
 macro = 'shift', 'alt', 'o' # Macro combination to integrate with other macro programs.
 
-# =================
+# ====================
 
 from PIL import ImageGrab
 from easyocr import Reader
