@@ -64,7 +64,7 @@ auto_mode_var = IntVar()
 auto_mode_text = StringVar()
 auto_mode_cbx = Checkbutton(root, text= 'Auto mode', variable = auto_mode_var, 
                             onvalue=1, offvalue=0)
-
+auto_mode_cbx.grid(row=0, column=3, sticky='w')
 
 # Tkinter functions
 
@@ -79,7 +79,32 @@ def delete_labels(root):
     no_i = 1
     row = 5
 
-def add_word(root, word, pinyin, translation, is_zi = False, procedence = 2):
+
+def cut(rem_trans, sliced_trans, max_length, delimiters = [' ', '/']):
+    if len(rem_trans) > max_length:
+        try:
+            last_index = next(max_length - i for i, delim in enumerate(rem_trans[:max_length][::-1]) if delim in delimiters)
+            #last_index = max([i for i, x in enumerate(rem_trans[:max_length]) if x in delimiters])
+            sliced_trans.append(rem_trans[:last_index])
+            rem_trans = rem_trans[last_index:]
+        except:
+            sliced_trans.append(rem_trans)
+    else:
+        sliced_trans.append(rem_trans)
+        
+    return rem_trans, sliced_trans 
+
+def dynamic_slice(translation, max_length = 50):
+    sliced_trans = []
+    rem_trans = translation
+    loops = round((len(translation)/max_length) + 0.5) # Formula to round up without modules.
+    for _ in range(loops):
+        rem_trans, sliced_trans = cut(rem_trans, sliced_trans, max_length)     
+
+    return sliced_trans  
+
+
+def add_word(root, word, pinyin, raw_translation, is_zi = False, procedence = 2):
     global row
     global no_i
 
@@ -95,11 +120,12 @@ def add_word(root, word, pinyin, translation, is_zi = False, procedence = 2):
     pinyin_label.config(font=('Arial', 14))
     pinyin_label.grid(row=row, column=2)
 
-    translation_label = Label(root, text=translation, anchor='w')
-    translation_label.config(font=('Arial', 14))
-    translation_label.grid(row=row, column=3, sticky= W)
+    for translation in dynamic_slice(raw_translation):
+        dummy_trans_label = Label(root, text=translation, anchor='w')
+        dummy_trans_label.config(font=('Arial', 14))
+        dummy_trans_label.grid(row=row, column=3, sticky= W)
+        row += 1
 
-    row += 1
     no_i += 1
 
 def auto_mode(root, reader):
@@ -107,17 +133,21 @@ def auto_mode(root, reader):
     global auto_mode_var
 
     if auto_mode_var.get() == 1:
+        st = time.time()
         temp_subt = read_ocr(reader)
+        t =  time.time() - st
+        print(f'Read in {t} sec.')
 
         if last_OCR != temp_subt and temp_subt != '':
             delete_labels(root)
             last_OCR = temp_subt           
             process_ocr(root, temp_subt)
         
-        root.after(100, auto_mode, root, reader)
+        root.after(200, auto_mode, root, reader)
 
 def simple_or_auto_translation(auto_var, root, reader):
     if auto_var.get():
+
         auto_mode()
     else:
         translate_sub(root, reader)
@@ -281,3 +311,4 @@ def rescue_word(root, word):
             except:
                 combined_pinyin += ' X '
         add_word(root, word, combined_pinyin, 'X', procedence = 3)
+

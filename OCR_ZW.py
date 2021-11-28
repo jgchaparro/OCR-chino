@@ -67,7 +67,7 @@ instructions.grid(row=0, column=0)
 # Configuration and start
 
 #auto_mode variables in functions file
-auto_mode_cbx.grid(row=0, column=3, sticky='w')
+
 
 capture_text = StringVar()
 capture_btn = Button(root, textvariable=capture_text, 
@@ -75,12 +75,6 @@ capture_btn = Button(root, textvariable=capture_text,
                     else translate_sub(root, reader))
 capture_text.set('Capture')
 capture_btn.grid(row=0, column=2)
-
-# bauto_mode_var = IntVar()
-# bauto_mode_text = StringVar()
-# bauto_mode_cbx = Checkbutton(root, text= 'Auto mode', variable = auto_mode_var, 
-#                             onvalue=1, offvalue=0)
-# bauto_mode_cbx.grid(row=0, column=4, sticky='w')
 
 options_text = StringVar()
 options_btn = Button(root, textvariable=options_text, command= lambda: process(root, ['我', '喜歡', '中國']))
@@ -109,7 +103,7 @@ pinyin_title.grid(row=4, column=2)
 
 translation_title = Label(root, text='Translation', anchor='w')
 translation_title.config(font=('Arial', 14))
-translation_title.grid(row=4, column=3)
+translation_title.grid(row=4, column=3, sticky=W)
 
 # OCR dictionary
 
