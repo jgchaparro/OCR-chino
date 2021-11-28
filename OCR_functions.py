@@ -10,6 +10,7 @@ import jieba
 import numpy
 import time
 
+
 # Tkinter base
 
 root = Tk()
@@ -18,6 +19,7 @@ root = Tk()
 
 last_OCR = 'dummy_text!'
 ix, iy, fx, fy = 85, 700, 870, 850
+traditional = False #dummy variable? Check if works
 
 def read_ocr(reader):
     """Takes and reads screenshot."""
@@ -152,6 +154,40 @@ def simple_or_auto_translation(auto_var, root, reader):
     else:
         translate_sub(root, reader)
 
+
+
+def open_options_window(root):
+    
+    options_window = Toplevel(root)
+    options_window.title("OCR_ZW - Options")
+    options_window.geometry("400x400")
+
+    options_menu = Frame(options_window, borderwidth=25)
+    options_menu.pack(fill='both', expand=True)
+ 
+    # A Label widget to show in toplevel
+    Label(options_menu, text ="Character set").grid(row = 1, column = 0)
+
+    def check_charset_callback(var, index, mode):
+        if ((sel_charset_var.get() == 'Traditional (繁體)' and not traditional) or 
+            (sel_charset_var.get() == 'Simplified (简体)' and traditional)):
+                switch_charset()
+
+    charsets = ['Simplified (简体)', 'Traditional (繁體)']
+    sel_charset_var = StringVar()
+    sel_charset_var.set(charsets[0])
+
+    sel_charset_menu = OptionMenu(options_menu, sel_charset_var, *charsets)
+    sel_charset_menu.config(font=('Helvetica', 14))
+    sel_charset_menu.grid(row=1, column=1)
+
+    sel_charset_var.trace_add('write', check_charset_callback)
+
+
+
+
+
+
 # Dictionary variables
 
 always_slice = False
@@ -171,12 +207,30 @@ def generate_lists(script_dir):
     global df_words
     global full_dic
     global full_dic_simp
+    global full_dic_trad
+
     df_words = pd.read_csv(os.path.join(script_dir, 'Files', 'Dictionary 3.2.csv'), sep='\\', encoding='utf-8')
     df_words = df_words.sort_values(by=['freq', 'pinyin'], ascending=[False, False])
-    full_dic = df_words.loc[:,'trad'].tolist()
+    
+    full_dic_trad = df_words.loc[:,'trad'].tolist()
     full_dic_simp = df_words.loc[:,'simp'].tolist()
 
+    full_dic = full_dic_trad if traditional else full_dic_simp
+
     print('Lists and data frames generated.')
+
+def switch_charset():
+    global reader
+    global traditional
+
+    if traditional:
+        print('Switching to simplified Chinese mode.')
+        reader = Reader(['ch_sim', 'en'])
+        traditional = False
+    else:
+        print('Switching to traditional Chinese mode.')
+        reader = Reader(['ch_tra', 'en'])
+        traditional = True
 
 def process(root, words):
     """Search the words or characters in the lists."""
@@ -311,4 +365,3 @@ def rescue_word(root, word):
             except:
                 combined_pinyin += ' X '
         add_word(root, word, combined_pinyin, 'X', procedence = 3)
-

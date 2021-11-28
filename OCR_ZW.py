@@ -19,7 +19,7 @@ screen_mult = 1
 
 # Optional parameters
 ss_filename = 'OCR_ZW_screenshot.png' # Name of the screenshot. Add extension, preferably .png.
-simplified = False # Set to True to detect simplified Chinese. 
+traditional = True # Set to True to detect traditional Chinese. 
 macro = 'shift', 'alt', 'o' # Macro combination to integrate with other macro programs.
 always_slice = False #  Set to True to get the individual characters a word is composed of.
 
@@ -42,10 +42,9 @@ jieba.set_dictionary(os.path.join(script_dir, 'Files', 'dict.txt.big.txt'))
 
 #==============
 
-reader = Reader(['ch_tra', 'en'])
-if simplified:
-    print('Switching to simplified Chinese mode.')
-    reader = Reader(['ch_sim', 'en'])
+reader = Reader(['ch_sim', 'en'])
+if traditional:
+    switch_charset()
 
 # Tkinter window
 
@@ -77,7 +76,7 @@ capture_text.set('Capture')
 capture_btn.grid(row=0, column=2)
 
 options_text = StringVar()
-options_btn = Button(root, textvariable=options_text, command= lambda: process(root, ['我', '喜歡', '中國']))
+options_btn = Button(root, textvariable=options_text, command= lambda: open_options_window(root))
 options_text.set('Options')
 options_btn.grid(row=1, column=2, columnspan=1)
 
