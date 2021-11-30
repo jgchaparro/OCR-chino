@@ -73,18 +73,24 @@ capture_btn = Button(root, textvariable=capture_text,
             command=lambda: auto_mode(root, reader) if auto_mode_var.get() == 1
                     else translate_sub(root, reader))
 capture_text.set('Capture')
-capture_btn.grid(row=0, column=2)
+capture_btn.grid(row=0, column=1, rowspan=2, sticky= 'nesw')
+
+bc_text = StringVar()
+bc_btn = Button(root, textvariable=bc_text, command= lambda: set_both_coordinates())
+bc_text.set('Calibrate')
+bc_btn.grid(row=0, column=2)
 
 options_text = StringVar()
 options_btn = Button(root, textvariable=options_text, command= lambda: open_options_window(root))
 options_text.set('Options')
-options_btn.grid(row=1, column=2, columnspan=1)
-
+options_btn.grid(row=1, column=2)
 
 delete_text = StringVar()
 delete_btn = Button(root, textvariable=delete_text, command= lambda: delete_labels(root))
 delete_text.set('Delete')
-delete_btn.grid(row=1, column=3, columnspan=1, sticky='w')  
+delete_btn.grid(row=1, column=3, sticky='w')  
+
+
 
 # OCR-ed words
 
@@ -102,7 +108,7 @@ pinyin_title.grid(row=4, column=2)
 
 translation_title = Label(root, text='Translation', anchor='w')
 translation_title.config(font=('Arial', 14))
-translation_title.grid(row=4, column=3, sticky=W)
+translation_title.grid(row=4, column=3, columnspan = 2, sticky=W)
 
 # OCR dictionary
 

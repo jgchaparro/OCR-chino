@@ -1,10 +1,11 @@
 from tkinter import *
+from tkinter import messagebox
 import pandas as pd
 import os
 import re
 from PIL import ImageGrab
 from easyocr import Reader
-from pyautogui import hotkey
+from pyautogui import position
 from pyperclip import copy
 import jieba
 import numpy
@@ -140,7 +141,7 @@ def add_word(root, word, pinyin, raw_translation, is_zi = False, procedence = 2)
     for translation in dynamic_slice(raw_translation):
         dummy_trans_label = Label(root, text=translation, anchor='w')
         dummy_trans_label.config(font=('Arial', 14))
-        dummy_trans_label.grid(row = row, column=3, sticky= W)
+        dummy_trans_label.grid(row = row, column=3, columnspan= 2, sticky= W)
         row += 1
 
     no_i += 1
@@ -172,6 +173,8 @@ def simple_or_auto_translation(auto_var, root, reader):
 
 
 def open_options_window(root):
+
+    global ix, iy, fx, fy
     
     options_window = Toplevel(root)
     options_window.title("OCR_ZW - Options")
@@ -180,9 +183,10 @@ def open_options_window(root):
     options_menu = Frame(options_window, borderwidth=25)
     options_menu.pack(fill='both', expand=True)
  
-    # A Label widget to show in toplevel
-    Label(options_menu, text ="Character set").grid(row = 1, column = 0)
+    #Select character set 
 
+    Label(options_menu, text ="Character set").grid(row = 1, column = 0)
+    
     def check_charset_callback(var, index, mode):
         if ((sel_charset_var.get() == 'Traditional (繁體)' and not traditional) or 
             (sel_charset_var.get() == 'Simplified (简体)' and traditional)):
@@ -198,10 +202,50 @@ def open_options_window(root):
 
     sel_charset_var.trace_add('write', check_charset_callback)
 
+    # Change screenshot coordinates
 
+    Label(options_menu, text ="Screenshot coordinates", anchor = 'center').grid(row = 2, column = 0, columnspan=2, pady= 20)
 
+    ic_text = StringVar()
+    ic_btn = Button(options_menu, textvariable=ic_text, command= lambda: set_coordinates(1))
+    ic_text.set('Set initial coordinates')
+    ic_btn.grid(row=3, column=0)
 
+    fc_text = StringVar()
+    fc_btn = Button(options_menu, textvariable=fc_text, command= lambda: set_coordinates(2))
+    fc_text.set('Set final coordinates')
+    fc_btn.grid(row=4, column=0)
 
+    bc_text = StringVar()
+    bc_btn = Button(options_menu, textvariable=bc_text, command= lambda: set_both_coordinates())
+    bc_text.set('Calibrate')
+    bc_btn.grid(row=3, column=1, rowspan=2)
+
+def set_coordinates(i, skip_last = False):
+    global ix, iy, fx, fy
+
+    corner_code = {
+                1: 'top-left',
+                2: 'bottom-right'
+
+    }
+
+    messagebox.showinfo(message=f"""Place the cursor on the {corner_code[i]} and press Enter.""", 
+                                    title="Set coordinates")
+
+    if i == 1:
+        ix, iy = position()
+        print(f'ix = {ix},  iy = {iy}')
+    else:
+        fx, fy = position()
+        print(f'fx = {fx},  fy = {fy}')
+
+    if not skip_last:
+        messagebox.showinfo(message=f'Coordinates saved.', title = 'Set coordinates' )
+
+def set_both_coordinates(t = 1):
+    set_coordinates(1, skip_last=True)
+    set_coordinates(2)
 
 # Dictionary variables
 
