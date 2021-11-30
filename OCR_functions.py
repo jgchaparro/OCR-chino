@@ -106,9 +106,24 @@ def dynamic_slice(translation, max_length = 50):
     return sliced_trans  
 
 
+# def procedence_color(i):
+#     colors = {
+#             1: '#ffa852', # beige-ish
+#             2: '#7faef5', # blue
+#             3: '#f5897f', # pale red
+#             }
+
+#     return colors[i]
+
+
 def add_word(root, word, pinyin, raw_translation, is_zi = False, procedence = 2):
     global row
     global no_i
+
+    #color = procedence_color(procedence)
+
+    #bg_row = Frame(root, bg = color)
+    #bg_row.grid(row = row, column = 0, columnspan = 4)
 
     no_label = Label(root, text=no_i)
     no_label.config(font=('Arial', 14))
@@ -116,16 +131,16 @@ def add_word(root, word, pinyin, raw_translation, is_zi = False, procedence = 2)
 
     word_label = Label(root, text=word)
     word_label.config(font=('DengXian', 14))
-    word_label.grid(row=row, column=1)
+    word_label.grid(row= row, column=1)
 
     pinyin_label = Label(root, text=pinyin)
     pinyin_label.config(font=('Arial', 14))
-    pinyin_label.grid(row=row, column=2)
+    pinyin_label.grid(row= row, column=2)
 
     for translation in dynamic_slice(raw_translation):
         dummy_trans_label = Label(root, text=translation, anchor='w')
         dummy_trans_label.config(font=('Arial', 14))
-        dummy_trans_label.grid(row=row, column=3, sticky= W)
+        dummy_trans_label.grid(row = row, column=3, sticky= W)
         row += 1
 
     no_i += 1
