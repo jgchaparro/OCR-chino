@@ -10,17 +10,31 @@ from pyperclip import copy
 import jieba
 import numpy
 import time
-
+from configparser import ConfigParser
 
 # Tkinter base
 
 root = Tk()
 
+# Basic parameters
+
+script_dir = os.path.dirname(__file__)
+ss_filename = 'OCR_ZW_screenshot.png' # Name of the screenshot. Add extension, preferably .png.
+img_dir = os.path.join(script_dir, 'Files', ss_filename)
+config_dir = os.path.join(script_dir, 'Files', 'config.ini')
+
+config = ConfigParser()
+config.read(config_dir)
+
+ix = config['COORDINATES'].getint('ix')
+iy = config['COORDINATES'].getint('iy')
+fx = config['COORDINATES'].getint('fx')
+fy = config['COORDINATES'].getint('fy')
+traditional = config['GENERAL'].getboolean('traditional')
+
 # Translation functions
 
 last_OCR = 'dummy_text!'
-ix, iy, fx, fy = 85, 700, 870, 850
-traditional = False #dummy variable? Check if works
 
 def read_ocr(reader):
     """Takes and reads screenshot."""
@@ -240,8 +254,24 @@ def set_coordinates(i, skip_last = False):
         fx, fy = position()
         print(f'fx = {fx},  fy = {fy}')
 
+    area = {
+        'ix': ix,
+        'iy': iy,
+        'fx': fx,
+        'fy': fy,
+        }
+    
+    for key, value in zip(area.keys(), area.values()):
+        config['COORDINATES'][key] = str(value)
+
+    with open(config_dir, 'w') as conf_file:
+        config.write(conf_file)
+
     if not skip_last:
         messagebox.showinfo(message=f'Coordinates saved.', title = 'Set coordinates' )
+
+
+
 
 def set_both_coordinates(t = 1):
     set_coordinates(1, skip_last=True)
@@ -286,10 +316,15 @@ def switch_charset():
         print('Switching to simplified Chinese mode.')
         reader = Reader(['ch_sim', 'en'])
         traditional = False
+        config['GENERAL']['traditional'] = False
     else:
         print('Switching to traditional Chinese mode.')
         reader = Reader(['ch_tra', 'en'])
         traditional = True
+        config['GENERAL']['traditional'] = True
+
+    with open(config_dir, 'w') as conf_file:
+        config.write(conf_file)
 
 def process(root, words):
     """Search the words or characters in the lists."""

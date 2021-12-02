@@ -13,30 +13,17 @@ import re
 import ctypes
 from OCR_functions import *
 
-# Mandatory parameters
-ix, iy, fx, fy = 160, 700, 860, 850 # Screenshot area: initial X, initial Y. final X and final Y.
-screen_mult = 1
 
 # Optional parameters
 ss_filename = 'OCR_ZW_screenshot.png' # Name of the screenshot. Add extension, preferably .png.
-traditional = True # Set to True to detect traditional Chinese. 
 macro = 'shift', 'alt', 'o' # Macro combination to integrate with other macro programs.
 always_slice = False #  Set to True to get the individual characters a word is composed of.
 
 #===============
 
-# Resize variables
-
-ix = ix * screen_mult
-iy = iy * screen_mult
-fx = fx * screen_mult
-fy = fy * screen_mult
-
 # Initialization and basic variables
 
 print('Initializing.')
-script_dir = os.path.dirname(__file__)
-img_dir = os.path.join(script_dir, 'Files', ss_filename)
 
 jieba.set_dictionary(os.path.join(script_dir, 'Files', 'dict.txt.big.txt'))
 
