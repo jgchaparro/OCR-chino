@@ -29,9 +29,8 @@ jieba.set_dictionary(os.path.join(script_dir, 'Files', 'dict.txt.big.txt'))
 
 #==============
 
-reader = Reader(['ch_sim', 'en'])
-if traditional:
-    switch_charset()
+reader_form = 'ch_tra' if traditional else 'ch_sim'
+reader = Reader([reader_form, 'en'])
 
 # Tkinter window
 

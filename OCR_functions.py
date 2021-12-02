@@ -207,8 +207,9 @@ def open_options_window(root):
                 switch_charset()
 
     charsets = ['Simplified (简体)', 'Traditional (繁體)']
+    charset = 'Traditional (繁體)' if traditional else 'Simplified (简体)'
     sel_charset_var = StringVar()
-    sel_charset_var.set(charsets[0])
+    sel_charset_var.set(charset)
 
     sel_charset_menu = OptionMenu(options_menu, sel_charset_var, *charsets)
     sel_charset_menu.config(font=('Helvetica', 14))
@@ -316,12 +317,12 @@ def switch_charset():
         print('Switching to simplified Chinese mode.')
         reader = Reader(['ch_sim', 'en'])
         traditional = False
-        config['GENERAL']['traditional'] = False
+        config['GENERAL']['traditional'] = 'False'
     else:
         print('Switching to traditional Chinese mode.')
         reader = Reader(['ch_tra', 'en'])
         traditional = True
-        config['GENERAL']['traditional'] = True
+        config['GENERAL']['traditional'] = 'True'
 
     with open(config_dir, 'w') as conf_file:
         config.write(conf_file)
