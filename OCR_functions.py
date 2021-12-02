@@ -175,7 +175,7 @@ def auto_mode(root, reader):
             last_OCR = temp_subt           
             process_ocr(root, temp_subt)
         
-        root.after(200, auto_mode, root, reader)
+        root.after(1000, auto_mode, root, reader)
 
 def simple_or_auto_translation(auto_var, root, reader):
     if auto_var.get():
@@ -312,16 +312,19 @@ def generate_lists(script_dir):
 def switch_charset():
     global reader
     global traditional
+    global full_dic, full_dic_simp, full_dic_trad
 
     if traditional:
         print('Switching to simplified Chinese mode.')
         reader = Reader(['ch_sim', 'en'])
         traditional = False
+        full_dic = full_dic_simp
         config['GENERAL']['traditional'] = 'False'
     else:
         print('Switching to traditional Chinese mode.')
         reader = Reader(['ch_tra', 'en'])
         traditional = True
+        full_dic = full_dic_trad
         config['GENERAL']['traditional'] = 'True'
 
     with open(config_dir, 'w') as conf_file:
@@ -369,7 +372,7 @@ def retrieve_from_current(root, word, is_zi = False, procedence = 2):
             slice_into_zis(root, word, procedence = "")
 
 def extract_info(index):
-    if simplified == False:
+    if traditional == True:
         word = df_words.iloc[index, 0]
     else:
         word = df_words.iloc[index, 1]
