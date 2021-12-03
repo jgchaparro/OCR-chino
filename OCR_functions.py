@@ -17,7 +17,7 @@ from configparser import ConfigParser
 # Tkinter base
 
 root = Tk()
-root_tile = ('中文 OCR')
+root.title('中文 OCR')
 
 # Basic parameters
 
