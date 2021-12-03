@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from tkinter import *
 from tkinter import messagebox
 import pandas as pd
@@ -15,6 +17,7 @@ from configparser import ConfigParser
 # Tkinter base
 
 root = Tk()
+root_tile = ('中文 OCR')
 
 # Basic parameters
 
