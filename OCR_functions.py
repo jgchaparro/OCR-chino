@@ -45,6 +45,7 @@ def read_ocr(reader):
     global last_OCR
 
     print('Reading screen.')
+    st =  time.time()
     image = ImageGrab.grab(bbox=(ix, iy, fx, fy))
     #image.save(r'C:\Users\jgcha\Desktop\Python\Python\OCR chino\Files\OCR_ZW_screenshot.png')
 
@@ -55,6 +56,9 @@ def read_ocr(reader):
         ocr_result = ''.join(raw_ocr_result)
     except:
         ocr_result = ''
+
+    t =  time.time() - st
+    print(f'Read in {t} sec.')
 
     return ocr_result
 
@@ -168,11 +172,8 @@ def auto_mode(root, reader):
     global auto_mode_var
 
     if auto_mode_var.get() == 1:
-        st = time.time()
         temp_subt = read_ocr(reader)
-        t =  time.time() - st
-        print(f'Read in {t} sec.')
-
+        
         if last_OCR != temp_subt and temp_subt != '':
             delete_labels(root)
             last_OCR = temp_subt           
